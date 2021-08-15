@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+
 import "./App.css";
 import { FormControl, Input, InputLabel } from "@material-ui/core";
 import Todo from "./components/Todo";
@@ -15,7 +15,9 @@ function App() {
     db.collection("Todos")
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
-        setTodos(snapshot.docs.map((doc) => doc.data().task));
+        setTodos(
+          snapshot.docs.map((doc) => ({ id: doc.id, task: doc.data().task }))
+        );
       });
   }, []);
 
@@ -27,6 +29,7 @@ function App() {
     e.preventDefault();
     db.collection("Todos").add({
       task: input,
+
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     });
     // setTodos([...todos, input]);
